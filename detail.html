@@ -233,6 +233,55 @@
             transform: scale(1.1);
             box-shadow: 0 4px 10px rgba(255,107,107,0.3);
         }
+
+        .share-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .share-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .share-link input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            font-size: 0.9em;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .share-link button {
+            padding: 8px 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-link button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+
+        .record-link {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .record-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -256,6 +305,12 @@
                 <img id="image-preview" class="preview-image">
             </div>
             <button onclick="addRecord()">添加记录</button>
+            <div class="share-section">
+                <div class="share-link">
+                    <input type="text" id="share-link" readonly>
+                    <button onclick="copyShareLink()">复制链接</button>
+                </div>
+            </div>
         </div>
 
         <div class="records" id="records-container">
@@ -317,7 +372,44 @@
             });
         }
 
-        // 添加新记录
+        // 生成分享链接
+        function generateShareLink() {
+            const records = JSON.parse(localStorage.getItem(`records_${category}`) || '[]');
+            const shareData = {
+                category: category,
+                records: records
+            };
+            const shareString = encodeURIComponent(JSON.stringify(shareData));
+            const shareLink = `${window.location.origin}${window.location.pathname}?share=${shareString}`;
+            document.getElementById('share-link').value = shareLink;
+        }
+
+        // 复制分享链接
+        function copyShareLink() {
+            const shareLink = document.getElementById('share-link');
+            shareLink.select();
+            document.execCommand('copy');
+            alert('链接已复制到剪贴板！');
+        }
+
+        // 检查是否有分享数据
+        function checkShareData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareData = urlParams.get('share');
+            if (shareData) {
+                try {
+                    const data = JSON.parse(decodeURIComponent(shareData));
+                    if (data.category && data.records) {
+                        localStorage.setItem(`records_${data.category}`, JSON.stringify(data.records));
+                        loadRecords();
+                    }
+                } catch (e) {
+                    console.error('Invalid share data');
+                }
+            }
+        }
+
+        // 修改添加记录函数
         function addRecord() {
             const content = document.getElementById('new-record').value.trim();
             if (!content && !selectedImage) return;
@@ -335,20 +427,26 @@
             selectedImage = null;
             imageInput.value = '';
             loadRecords();
+            generateShareLink(); // 更新分享链接
         }
 
-        // 删除记录
+        // 修改删除记录函数
         function deleteRecord(index) {
             if (confirm('确定要删除这条记录吗？')) {
                 const records = JSON.parse(localStorage.getItem(`records_${category}`) || '[]');
                 records.splice(index, 1);
                 localStorage.setItem(`records_${category}`, JSON.stringify(records));
                 loadRecords();
+                generateShareLink(); // 更新分享链接
             }
         }
 
-        // 页面加载时显示记录
-        loadRecords();
+        // 页面加载时执行
+        window.onload = function() {
+            checkShareData();
+            loadRecords();
+            generateShareLink();
+        };
 
         // 背景图片设置功能
         const backgroundInput = document.getElementById('background-input');
