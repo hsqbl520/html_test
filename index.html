@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hsq与bl的美好生活</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header p {
+            color: #666;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .category-card h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .category-card p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .home-image-section {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .home-image-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .home-image-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .home-image-upload {
+            margin-bottom: 20px;
+        }
+
+        .home-image-upload label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .home-image-upload label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .home-image-upload input[type="file"] {
+            display: none;
+        }
+
+        .home-image {
+            max-width: 100%;
+            max-height: 500px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+            margin: 0 auto;
+        }
+
+        .home-image-description {
+            margin-top: 15px;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>hsq与bl的美好生活</h1>
+        <p>记录生活的点点滴滴</p>
+    </header>
+
+    <div class="container">
+        <div class="categories">
+            <div class="category-card" onclick="location.href='detail.html?category=study'">
+                <div class="icon">📚</div>
+                <h2>学习</h2>
+                <p>记录学习过程中的收获与思考</p>
+            </div>
+            <div class="category-card" onclick="location.href='detail.html?category=daily'">
+                <div class="icon">🌞</div>
+                <h2>日常</h2>
+                <p>记录生活中的美好时刻</p>
+            </div>
+            <div class="category-card" onclick="location.href='detail.html?category=relationship'">
+                <div class="icon">❤️</div>
+                <h2>情侣相处</h2>
+                <p>记录我们的甜蜜时光</p>
+            </div>
+            <div class="category-card" onclick="location.href='detail.html?category=plan'">
+                <div class="icon">🎯</div>
+                <h2>未来计划</h2>
+                <p>规划我们的美好未来</p>
+            </div>
+        </div>
+
+        <div class="home-image-section">
+            <div class="home-image-container">
+                <h2 class="home-image-title">我们的照片墙</h2>
+                <div class="home-image-upload">
+                    <label for="home-image-input">选择照片</label>
+                    <input type="file" id="home-image-input" accept="image/*">
+                </div>
+                <img id="home-image" class="home-image" alt="我们的照片">
+                <p class="home-image-description" id="home-image-description">记录我们的美好时刻</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        // 主页图片功能
+        const homeImageInput = document.getElementById('home-image-input');
+        const homeImage = document.getElementById('home-image');
+        const homeImageDescription = document.getElementById('home-image-description');
+
+        // 从数据管理器加载主页图片
+        const savedHomeImage = DataManager.getHomeImage();
+        if (savedHomeImage) {
+            homeImage.src = savedHomeImage;
+            homeImage.style.display = 'block';
+        }
+
+        homeImageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageUrl = e.target.result;
+                    homeImage.src = imageUrl;
+                    homeImage.style.display = 'block';
+                    DataManager.setHomeImage(imageUrl);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html> 
