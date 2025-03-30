@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生活记录详情</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            color: #333;
+            min-height: 100vh;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            transition: background-image 0.5s ease;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(245, 247, 250, 0.9) 0%, rgba(195, 207, 226, 0.9) 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .add-record {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .add-record textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            resize: vertical;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .add-record textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255,107,107,0.2);
+        }
+
+        .image-upload {
+            margin-bottom: 15px;
+        }
+
+        .image-upload label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-upload label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+
+        .image-upload input[type="file"] {
+            display: none;
+        }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .add-record button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .add-record button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+        }
+
+        .records {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .record-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .record-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+
+        .record-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .record-content {
+            line-height: 1.8;
+            font-size: 1.1em;
+        }
+
+        .record-image {
+            max-width: 100%;
+            border-radius: 15px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .background-settings {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .background-settings label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .background-settings label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .background-settings input[type="file"] {
+            display: none;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .record-card:hover .delete-button {
+            opacity: 1;
+        }
+
+        .delete-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(255,107,107,0.3);
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">返回首页</a>
+    
+    <div class="background-settings">
+        <label for="background-input">更换背景</label>
+        <input type="file" id="background-input" accept="image/*">
+    </div>
+
+    <header>
+        <h1 id="category-title">生活记录</h1>
+    </header>
+
+    <div class="container">
+        <div class="add-record">
+            <textarea id="new-record" placeholder="写下新的记录..."></textarea>
+            <div class="image-upload">
+                <label for="image-input">添加图片</label>
+                <input type="file" id="image-input" accept="image/*">
+                <img id="image-preview" class="preview-image">
+            </div>
+            <button onclick="addRecord()">添加记录</button>
+        </div>
+
+        <div class="records" id="records-container">
+            <!-- 记录将通过 JavaScript 动态添加 -->
+        </div>
+    </div>
+
+    <script>
+        // 获取URL参数中的分类
+        const urlParams = new URLSearchParams(window.location.search);
+        const category = urlParams.get('category');
+
+        // 设置页面标题
+        const categoryTitles = {
+            'study': '学习记录',
+            'daily': '日常生活',
+            'relationship': '情侣相处',
+            'plan': '未来计划'
+        };
+        document.getElementById('category-title').textContent = categoryTitles[category] || '生活记录';
+
+        // 图片预览功能
+        const imageInput = document.getElementById('image-input');
+        const imagePreview = document.getElementById('image-preview');
+        let selectedImage = null;
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                    selectedImage = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 从localStorage加载记录
+        function loadRecords() {
+            const records = JSON.parse(localStorage.getItem(`records_${category}`) || '[]');
+            const container = document.getElementById('records-container');
+            container.innerHTML = '';
+            
+            records.forEach((record, index) => {
+                const recordElement = document.createElement('div');
+                recordElement.className = 'record-card';
+                let content = `
+                    <div class="record-date">${record.date}</div>
+                    <div class="record-content">${record.content}</div>
+                    <div class="delete-button" onclick="deleteRecord(${index})">×</div>
+                `;
+                if (record.image) {
+                    content += `<img src="${record.image}" class="record-image" alt="记录图片">`;
+                }
+                recordElement.innerHTML = content;
+                container.appendChild(recordElement);
+            });
+        }
+
+        // 添加新记录
+        function addRecord() {
+            const content = document.getElementById('new-record').value.trim();
+            if (!content && !selectedImage) return;
+
+            const records = JSON.parse(localStorage.getItem(`records_${category}`) || '[]');
+            records.unshift({
+                date: new Date().toLocaleString(),
+                content: content,
+                image: selectedImage
+            });
+
+            localStorage.setItem(`records_${category}`, JSON.stringify(records));
+            document.getElementById('new-record').value = '';
+            imagePreview.style.display = 'none';
+            selectedImage = null;
+            imageInput.value = '';
+            loadRecords();
+        }
+
+        // 删除记录
+        function deleteRecord(index) {
+            if (confirm('确定要删除这条记录吗？')) {
+                const records = JSON.parse(localStorage.getItem(`records_${category}`) || '[]');
+                records.splice(index, 1);
+                localStorage.setItem(`records_${category}`, JSON.stringify(records));
+                loadRecords();
+            }
+        }
+
+        // 页面加载时显示记录
+        loadRecords();
+
+        // 背景图片设置功能
+        const backgroundInput = document.getElementById('background-input');
+        
+        // 从localStorage加载对应分类的背景图片
+        const savedBackground = localStorage.getItem(`background_image_${category}`);
+        if (savedBackground) {
+            document.body.style.backgroundImage = `url(${savedBackground})`;
+        }
+
+        backgroundInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageUrl = e.target.result;
+                    document.body.style.backgroundImage = `url(${imageUrl})`;
+                    // 保存到对应分类的背景图片
+                    localStorage.setItem(`background_image_${category}`, imageUrl);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html> 
